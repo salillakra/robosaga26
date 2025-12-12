@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AlertTriangle, Mail, ArrowLeft, Zap, Bot } from "lucide-react";
+import { AlertTriangle, Mail, ArrowLeft, Zap } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -64,7 +65,13 @@ export default function UnauthorizedPage() {
               className="mb-6 relative"
             >
               <div className="relative inline-block">
-                <Bot className="w-24 h-24 mx-auto text-red-500" />
+                <Image
+                  src="/svg/robosaga.svg"
+                  alt="RoboSaga Logo"
+                  width={96}
+                  height={96}
+                  className="mx-auto opacity-50"
+                />
                 <motion.div
                   className="absolute -top-2 -right-2"
                   animate={{ rotate: [0, 15, -15, 0] }}
