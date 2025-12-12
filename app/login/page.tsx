@@ -77,18 +77,16 @@ export default async function LoginPage() {
           <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-yellow-400 rounded-bl-3xl" />
           <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-yellow-400 rounded-br-3xl" />
 
-          {/* Robolution Logo */}
+          {/* RoboSaga Logo */}
           <div className="flex justify-center mb-8 -mt-2">
             <div className="relative">
-              <div className="bg-black/60 backdrop-blur-sm rounded-2xl p-4 border-2 border-yellow-400/30 shadow-lg shadow-yellow-400/20">
-                <Image
-                  height={120}
-                  width={120}
-                  src="/robolution_logo.jpg"
-                  alt="Robolution Logo"
-                  className="w-28 h-28 object-cover rounded-xl brightness-110 contrast-125"
-                />
-              </div>
+              <Image
+                src="/svg/robosaga.svg"
+                alt="RoboSaga '26 Logo"
+                width={280}
+                height={100}
+                className="h-20 w-auto"
+              />
             </div>
           </div>
 
@@ -143,7 +141,7 @@ export default async function LoginPage() {
             >
               <button
                 type="submit"
-                className="w-full cursor-pointer bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-xl border-4 border-yellow-400 shadow-lg shadow-red-500/50 transition-all duration-400 hover:scale-[1.02] hover:shadow-xl hover:shadow-red-500/70 font-mono text-lg flex items-center justify-center gap-3 group"
+                className="w-full cursor-pointer bg-linear-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-xl border-4 border-yellow-400 shadow-lg shadow-red-500/50 transition-all duration-400 hover:scale-[1.02] hover:shadow-xl hover:shadow-red-500/70 font-mono text-lg flex items-center justify-center gap-3 group"
               >
                 <svg
                   className="w-6 h-6 group-hover:rotate-12 transition-transform"
