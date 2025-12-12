@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,12 @@ import {
   Mic,
   Calendar,
   MapPin,
+  Users,
+  Globe,
+  Lightbulb,
+  Handshake,
 } from "lucide-react";
+import { Vortex } from "@/components/ui/vortex";
 
 export default function Home() {
   const events = [
@@ -36,10 +42,10 @@ export default function Home() {
   ];
 
   const stats = [
-    { value: "5000+", label: "Participants" },
-    { value: "10K+", label: "Social Reach" },
-    { value: "20+", label: "Workshops" },
-    { value: "50+", label: "Partners" },
+    { value: "5000+", label: "Participants", icon: Users },
+    { value: "10K+", label: "Social Reach", icon: Globe },
+    { value: "20+", label: "Workshops", icon: Lightbulb },
+    { value: "50+", label: "Partners", icon: Handshake },
   ];
 
   return (
@@ -49,115 +55,105 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
         {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            className="absolute top-20 left-10 w-4 h-4 bg-yellow-400 rounded-full"
-            animate={{
-              y: [0, -20, 0],
-              opacity: [0.5, 1, 0.5],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-          <motion.div
-            className="absolute top-40 right-20 w-3 h-3 bg-yellow-400 rounded-full"
-            animate={{
-              y: [0, -15, 0],
-              opacity: [0.5, 1, 0.5],
-            }}
-            transition={{
-              duration: 2.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 0.5,
-            }}
-          />
-          <motion.div
-            className="absolute bottom-40 left-1/4 w-3 h-3 bg-yellow-400 rounded-full"
-            animate={{
-              y: [0, -10, 0],
-              opacity: [0.5, 1, 0.5],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            }}
-          />
-        </div>
+        <div className="inset-0 z-10 absolute bg-black/50 pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
-          >
-            <div className="w-32 h-32 mx-auto bg-yellow-400 rounded-full flex items-center justify-center mb-6">
-              {/* Placeholder for logo */}
-              <Bot className="w-20 h-20 text-black" />
-            </div>
-          </motion.div>
+        <Vortex
+          backgroundColor="black"
+          className="flex items-center flex-col justify-center px-2 md:px-10 py-4 w-full h-full"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.15, type: "spring", stiffness: 100 }}
+              className="mb-2"
+            >
+              <p className="text-xl md:text-2xl text-[#176AA2] font-bold tracking-widest">
+                <span className="inline-block">ROBOLUTION</span>
+                <span className="text-[#D9D9D9] mx-2">PRESENTS</span>
+              </p>
+            </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-6xl md:text-8xl font-bold mb-4"
-          >
-            <span className="text-yellow-400">ROBO</span>
-            <span className="text-white">SAGA</span>
-            <span className="text-yellow-400"> &apos;26</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="text-xl md:text-2xl text-gray-300 mb-2"
-          >
-            Pioneering Innovation, Redefining Robotics
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="text-lg md:text-xl text-yellow-400 mb-8 flex items-center justify-center gap-4 flex-wrap"
-          >
-            <span className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" /> 23-25 January, 2026
-            </span>
-            <span className="flex items-center gap-2">
-              <MapPin className="w-5 h-5" /> BIT Mesra, Ranchi
-            </span>
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <Link href="/events">
-              <Button variant="pacman" className="text-lg px-8 py-6">
-                Explore Events
-              </Button>
-            </Link>
-            <Link href="/teams">
-              <Button
-                variant="outline"
-                className="text-lg px-8 py-6 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black"
+            <motion.h1
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, type: "spring", stiffness: 120 }}
+              className="text-6xl md:text-8xl font-bold mb-4"
+            >
+              <motion.span
+                className="text-[#F8C437]"
+                animate={{
+                  textShadow: [
+                    "0 0 20px #F8C437",
+                    "0 0 40px #F8C437",
+                    "0 0 20px #F8C437",
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
               >
-                Register Team
-              </Button>
-            </Link>
-          </motion.div>
-        </div>
+                ROBO
+              </motion.span>
+              <span className="text-white">SAGA</span>
+              <motion.span
+                className="text-[#F8C437]"
+                animate={{
+                  textShadow: [
+                    "0 0 20px #F8C437",
+                    "0 0 40px #F8C437",
+                    "0 0 20px #F8C437",
+                  ],
+                }}
+                transition={{ duration: 20, repeat: Infinity, delay: 0.5 }}
+              >
+                &apos;26
+              </motion.span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-xl md:text-2xl text-gray-300 mb-2"
+            >
+              Pioneering Innovation, Redefining Robotics
+            </motion.p>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="text-lg md:text-xl text-yellow-400 mb-8 flex items-center justify-center gap-4 flex-wrap"
+            >
+              <span className="flex items-center gap-2">
+                <Calendar className="w-5 h-5" /> 23-25 January, 2026
+              </span>
+              <span className="flex items-center gap-2">
+                <MapPin className="w-5 h-5" /> BIT Mesra, Ranchi
+              </span>
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
+              <Link href="/events">
+                <Button variant="pacman" className="text-lg px-8 py-6">
+                  Explore Events
+                </Button>
+              </Link>
+              <Link href="/teams">
+                <Button
+                  variant="outline"
+                  className="text-lg px-8 py-6 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black"
+                >
+                  Register Team
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </Vortex>
 
         {/* Scroll Indicator */}
         <motion.div
@@ -175,21 +171,25 @@ export default function Home() {
       <section className="py-20 bg-black/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center"
-              >
-                <div className="text-4xl md:text-5xl font-bold text-yellow-400 mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-gray-400">{stat.label}</div>
-              </motion.div>
-            ))}
+            {stats.map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="text-center grid place-items-center"
+                >
+                  <div className="text-4xl flex md:text-5xl font-bold text-yellow-400 mb-2 gap-2">
+                    <IconComponent className="w-12 h-12 text-yellow-400" />
+                    {stat.value}
+                  </div>
+                  <div className="text-gray-400">{stat.label}</div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -215,7 +215,7 @@ export default function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <div className="bg-gradient-to-br from-yellow-400/20 to-transparent p-8 rounded-lg border-2 border-yellow-400/50">
+              <div className="bg-linear-to-br from-yellow-400/20 to-transparent p-8 rounded-lg border-2 border-yellow-400/50">
                 {/* Placeholder for image */}
                 <div className="w-full h-64 bg-gray-800 rounded-lg flex items-center justify-center mb-4">
                   <span className="text-gray-500">Robolution Logo / Image</span>
@@ -276,7 +276,7 @@ export default function Home() {
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <Card className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400/50 hover:border-yellow-400 transition-all hover:scale-105">
+                  <Card className="bg-linear-to-br from-gray-900 to-black border-2 border-yellow-400/50 hover:border-yellow-400 transition-all hover:scale-105">
                     <CardHeader>
                       <IconComponent className="w-12 h-12 text-yellow-400 mb-2" />
                       <CardTitle className="text-yellow-400">
@@ -314,7 +314,7 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-r from-yellow-400 to-yellow-500 p-12 rounded-2xl"
+            className="bg-linear-to-r from-yellow-400 to-yellow-500 p-12 rounded-2xl"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
               Ready to Compete?
