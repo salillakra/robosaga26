@@ -21,6 +21,7 @@ import {
   Handshake,
 } from "lucide-react";
 import { Vortex } from "@/components/ui/vortex";
+import Image from "next/image";
 
 export default function Home() {
   const events = [
@@ -67,7 +68,7 @@ export default function Home() {
               transition={{ delay: 0.15, type: "spring", stiffness: 100 }}
               className="mb-3 sm:mb-4 md:mb-2"
             >
-              <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-[#176AA2] font-bold tracking-widest">
+              <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-yellow-400 font-bold tracking-widest">
                 <span className="inline-block">ROBOLUTION</span>
                 <span className="text-[#D9D9D9] mx-1 sm:mx-2">PRESENTS</span>
               </p>
@@ -149,7 +150,7 @@ export default function Home() {
               <Link href="/teams" className="w-full sm:w-auto">
                 <Button
                   variant="outline"
-                  className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black"
+                  className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto border-yellow-400 text-gray-900 hover:bg-yellow-400 hover:text-black"
                 >
                   Register Team
                 </Button>
@@ -221,10 +222,13 @@ export default function Home() {
               viewport={{ once: true }}
             >
               <div className="bg-linear-to-br from-yellow-400/20 to-transparent p-8 rounded-lg border-2 border-yellow-400/50">
-                {/* Placeholder for image */}
-                <div className="w-full h-64 bg-gray-800 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-gray-500">Robolution Logo / Image</span>
-                </div>
+                <Image
+                  src="/group_photo.jpeg"
+                  alt="Group Photo"
+                  className="w-full h-auto"
+                  height={500}
+                  width={500}
+                />
               </div>
             </motion.div>
 
