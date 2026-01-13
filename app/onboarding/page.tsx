@@ -75,11 +75,18 @@ export default function OnboardingPage() {
       const response = await axiosInstance.post("/onboarding", data);
       return response.data;
     },
-    onSuccess: async () => {
+    onSuccess: async (data, variables) => {
       toast.success("Profile updated successfully!");
-      // Update the session with new data
-      await update();
-      // Redirect to home page
+      // Update the session with new data explicitly to update client state immediately
+      await update({
+        user: {
+          ...session?.user,
+          rollNo: variables.rollno,
+          branch: variables.branch,
+          phoneNo: variables.phoneNo,
+        },
+      });
+      router.refresh(); // Refresh to ensure layout updates
       router.push("/");
     },
     onError: (error: unknown) => {

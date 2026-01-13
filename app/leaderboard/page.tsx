@@ -254,50 +254,52 @@ export default function LeaderboardPage() {
             Full <span className="text-yellow-400">Rankings</span>
           </motion.h2>
 
-          <div className="bg-linear-to-br from-gray-900 to-black border-2 border-yellow-400/50 rounded-lg overflow-hidden">
-            {/* Table Header */}
-            <div className="bg-yellow-400 text-black font-bold grid grid-cols-12 gap-4 p-4">
-              <div className="col-span-1 text-center">Rank</div>
-              <div className="col-span-5">Team Name</div>
-              <div className="col-span-2 text-center">Points</div>
-              <div className="col-span-2 text-center">Members</div>
-              <div className="col-span-2 text-center">Team Code</div>
-            </div>
+          <div className="bg-linear-to-br from-gray-900 to-black border-2 border-yellow-400/50 rounded-lg overflow-hidden overflow-x-auto">
+            <div className="min-w-[600px]">
+              {/* Table Header */}
+              <div className="bg-yellow-400 text-black font-bold grid grid-cols-12 gap-4 p-4">
+                <div className="col-span-1 text-center">Rank</div>
+                <div className="col-span-5">Team Name</div>
+                <div className="col-span-2 text-center">Points</div>
+                <div className="col-span-2 text-center">Members</div>
+                <div className="col-span-2 text-center">Team Code</div>
+              </div>
 
-            {/* Table Rows */}
-            <div className="divide-y divide-gray-800">
-              {leaderboardData.map((team, index) => (
-                <motion.div
-                  key={team.rank}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  viewport={{ once: true }}
-                  className="grid grid-cols-12 gap-4 p-4 hover:bg-yellow-400/10 transition-colors"
-                >
-                  <div className="col-span-1 text-center font-bold text-yellow-400 flex items-center justify-center gap-1">
-                    {team.rank <= 3 &&
-                      (team.rank === 1 ? (
-                        <Trophy className="w-5 h-5" />
-                      ) : (
-                        <Medal className="w-5 h-5" />
-                      ))}
-                    <span>{team.rank}</span>
-                  </div>
-                  <div className="col-span-5 font-semibold">
-                    {team.teamName}
-                  </div>
-                  <div className="col-span-2 text-center font-bold text-yellow-400">
-                    {team.points}
-                  </div>
-                  <div className="col-span-2 text-center text-gray-400">
-                    {team.members}
-                  </div>
-                  <div className="col-span-2 text-center text-gray-400 text-sm">
-                    {team.slug}
-                  </div>
-                </motion.div>
-              ))}
+              {/* Table Rows */}
+              <div className="divide-y divide-gray-800">
+                {leaderboardData.map((team, index) => (
+                  <motion.div
+                    key={team.rank}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    viewport={{ once: true }}
+                    className="grid grid-cols-12 gap-4 p-4 hover:bg-yellow-400/10 transition-colors"
+                  >
+                    <div className="col-span-1 text-center font-bold text-yellow-400 flex items-center justify-center gap-1">
+                      {team.rank <= 3 &&
+                        (team.rank === 1 ? (
+                          <Trophy className="w-5 h-5" />
+                        ) : (
+                          <Medal className="w-5 h-5" />
+                        ))}
+                      <span>{team.rank}</span>
+                    </div>
+                    <div className="col-span-5 font-semibold">
+                      {team.teamName}
+                    </div>
+                    <div className="col-span-2 text-center font-bold text-yellow-400">
+                      {team.points}
+                    </div>
+                    <div className="col-span-2 text-center text-gray-400">
+                      {team.members}
+                    </div>
+                    <div className="col-span-2 text-center text-gray-400 text-sm">
+                      {team.slug}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -316,7 +318,7 @@ export default function LeaderboardPage() {
       {/* Stats Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               whileInView={{ opacity: 1, scale: 1 }}
