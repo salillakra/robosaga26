@@ -8,7 +8,8 @@ export async function POST(req: NextRequest) {
   try {
     const currentUser = await getCurrentUser();
 
-    if (!currentUser || currentUser.role !== "admin") {
+    // Only admin can update user roles
+    if (!currentUser || currentUser.role == "user" || currentUser.role == "moderator") {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
 
-    if (role !== "admin" && role !== "user") {
+    if (role !== "admin" && role !== "moderator" && role !== "user") {
       return new NextResponse("Invalid role", { status: 400 });
     }
 

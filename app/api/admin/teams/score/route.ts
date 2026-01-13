@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const currentUser = await getCurrentUser();
 
-    if (!currentUser || currentUser.role !== "admin") {
+    if (!currentUser || currentUser.role == "user") {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
