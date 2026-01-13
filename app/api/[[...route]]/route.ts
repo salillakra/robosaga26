@@ -49,30 +49,8 @@ async function requireAuth(
   await next();
 }
 
-// Admin middleware
-async function requireAdmin(
-  c: Context<{ Variables: Variables }>,
-  next: () => Promise<void>
-) {
-  const session = await getSessionFromCookie();
 
-  if (!session?.user?.id) {
-    return c.json({ error: "Unauthorized - Please log in" }, 401);
-  }
 
-  if (session.user.role !== "admin") {
-    return c.json({ error: "Forbidden - Admin access required" }, 403);
-  }
-
-  c.set("session", session as Session);
-  await next();
-}
-
-app.get("/hello", (c) => {
-  return c.json({
-    message: "Hello Next.js!",
-  });
-});
 
 // Public route - Get team by slug
 app.get("/teams/:slug", async (c) => {
@@ -434,7 +412,7 @@ app.post("/teams/join/request", async (c) => {
 // Leader accepts join request
 app.post("/teams/requests/accept", async (c) => {
   try {
-    const session = c.get("session");
+    const session = c.get("session"); 
     const body = await c.req.json();
     const { requestId } = body;
 
@@ -602,6 +580,40 @@ app.post("/teams/members/remove", async (c) => {
     return c.json({ success: true, message: "Member removed from team" });
   } catch (error) {
     console.error("Error removing member:", error);
+    return c.json({ error: "Internal server error" }, 500);
+  }
+});
+
+// Leader deletes team
+app.delete("/teams/:id", requireAuth, async (c) => {
+  try {
+    const session = c.get("session");
+    const teamId = c.req.param("id");
+
+    if (!teamId) {
+      return c.json({ error: "Team ID is required" }, 400);
+    }
+
+    const [team] = await db
+      .select()
+      .from(teams)
+      .where(eq(teams.id, teamId))
+      .limit(1);
+
+    if (!team) {
+      return c.json({ error: "Team not found" }, 404);
+    }
+
+    if (team.leaderId !== session.user.id) {
+      return c.json({ error: "Only the team leader can delete the team" }, 403);
+    }
+
+    // Delete team (cascade will handle members and requests)
+    await db.delete(teams).where(eq(teams.id, teamId));
+
+    return c.json({ success: true, message: "Team deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting team:", error);
     return c.json({ error: "Internal server error" }, 500);
   }
 });

@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   try {
     const user = await getCurrentUser();
 
-    if (!user || user.role !== "admin") {
+    if (!user || user.role == "user") {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
