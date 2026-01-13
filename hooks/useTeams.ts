@@ -155,6 +155,22 @@ export const useLeaveTeam = () => {
   });
 };
 
+// Delete team mutation (leader only)
+export const useDeleteTeam = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (teamId: string) => {
+      const { data } = await axios.delete(`/teams/${teamId}`);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userTeam"] });
+      queryClient.invalidateQueries({ queryKey: ["userJoinRequests"] });
+    },
+  });
+};
+
 // Legacy hook for backward compatibility
 export const useJoinTeam = () => {
   const queryClient = useQueryClient();
@@ -167,6 +183,16 @@ export const useJoinTeam = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userTeam"] });
       queryClient.invalidateQueries({ queryKey: ["userJoinRequests"] });
+    },
+  });
+};
+// Fetch user's team profile (enriched with stats)
+export const useUserTeamProfile = () => {
+  return useQuery({
+    queryKey: ["userTeamProfile"],
+    queryFn: async () => {
+      const { data } = await axios.get("/user/team");
+      return data.team as (Team & { eventsJoined: number; rank: number; userRole: string }) | null;
     },
   });
 };
