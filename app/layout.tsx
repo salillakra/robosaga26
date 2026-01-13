@@ -5,6 +5,7 @@ import AuthProvider from "@/provider/AuthProvider";
 import QueryProvider from "@/provider/QueryProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
+import OnboardingBanner from "@/components/OnboardingBanner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -118,6 +119,7 @@ export default function RootLayout({
         className={`${inter.variable} ${orbitron.variable} ${rajdhani.variable} ${spaceMono.variable} antialiased isolate`}
       >
         <AuthProvider>
+          <OnboardingBanner />
           <QueryProvider>{children}</QueryProvider>
           <Toaster position="top-right" />
         </AuthProvider>
