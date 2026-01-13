@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useUserTeamProfile } from "@/hooks/useTeams";
 import {
   Mail,
   Calendar,
@@ -25,6 +26,8 @@ import PacmanLoader from "@/components/PacmanLoader";
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+
+  const { data: teamData, isLoading: loadingTeam } = useUserTeamProfile();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -86,18 +89,24 @@ export default function ProfilePage() {
               transition={{ delay: 0.2 }}
               className="md:col-span-1"
             >
-              <Card className="bg-linear-to-br from-gray-900 to-black border-2 border-yellow-400/50">
-                <CardHeader className="text-center">
-                  <div className="mx-auto mb-4">
+              <Card className="bg-black/40 backdrop-blur-md border border-yellow-400/30 overflow-hidden relative group">
+                <div className="absolute inset-0 bg-yellow-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <CardHeader className="text-center pb-2 relative z-10">
+                  <div className="mx-auto mb-6 relative inline-block">
+                    <motion.div
+                      className="absolute -inset-1 bg-linear-to-r from-yellow-400 to-yellow-600 rounded-full blur opacity-75"
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    />
                     {session.user?.image ? (
                       <div className="relative w-32 h-32 mx-auto">
                         <Image
-                          height={200}
-                          width={200}
+                          height={128}
+                          width={128}
                           aria-label={`${session.user.name} Profile Picture`}
                           src={session.user.image}
                           alt={session.user.name || "User"}
-                          className="rounded-full border-4 border-yellow-400 object-cover"
+                          className="rounded-full border-2 border-black relative z-10 object-cover"
                         />
                       </div>
                     ) : (
@@ -128,7 +137,9 @@ export default function ProfilePage() {
                   {session.user?.branch && (
                     <div className="flex items-center space-x-3 text-gray-300">
                       <GraduationCap className="w-5 h-5 text-yellow-400" />
-                      <span className="text-sm font-medium">{session.user.branch}</span>
+                      <span className="text-sm font-medium">
+                        {session.user.branch}
+                      </span>
                     </div>
                   )}
                   {session.user?.phoneNo && (
@@ -150,16 +161,19 @@ export default function ProfilePage() {
                   <div className="flex items-center space-x-3 text-gray-300">
                     <Calendar className="w-5 h-5 text-yellow-400" />
                     <span className="text-sm font-medium">
-                      Joined {session.user.joinedAt ? new Date(session.user.joinedAt).toLocaleDateString() : "Unknown"}
+                      Joined{" "}
+                      {session.user.joinedAt
+                        ? new Date(session.user.joinedAt).toLocaleDateString()
+                        : "Unknown"}
                     </span>
                   </div>
                   <Button
-                    variant="pacman"
-                    className="w-full mt-6 bg-red-500 hover:bg-red-600 flex items-center justify-center space-x-2"
+                    variant="outline"
+                    className="w-full mt-8 border-red-500/50 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500 transition-all duration-300"
                     onClick={() => signOut({ callbackUrl: "/" })}
                   >
-                    <LogOut className="w-4 h-4" />
-                    <span>Logout</span>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
                   </Button>
                 </CardContent>
               </Card>
@@ -173,97 +187,170 @@ export default function ProfilePage() {
               className="md:col-span-2 space-y-6"
             >
               {/* Team Info */}
-              <Card className="bg-linear-to-br from-gray-900 to-black border-2 border-yellow-400/50">
+              <Card className="bg-black/40 backdrop-blur-md border border-yellow-400/30">
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2 text-yellow-400">
+                  <CardTitle className="flex items-center space-x-3 text-2xl text-yellow-400">
                     <Users className="w-6 h-6" />
                     <span>Team Information</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4">
-                    You haven&apos;t joined a team yet. Create or join a team to
-                    participate in events!
-                  </p>
-                  <Button
-                    variant="pacman"
-                    onClick={() => router.push("/teams")}
-                  >
-                    Go to Teams
-                  </Button>
+                  <div className="bg-yellow-400/5 rounded-xl p-6 border border-yellow-400/10">
+                    {loadingTeam ? (
+                      <div className="animate-pulse space-y-4">
+                        <div className="h-4 bg-gray-700 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+                      </div>
+                    ) : teamData ? (
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-sm text-gray-400">Team Name</p>
+                          <p className="text-xl font-bold text-yellow-400">
+                            {teamData.name}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-400">Your Role</p>
+                          <p className="text-lg capitalize text-white">
+                            {teamData.userRole}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-400 mb-2">Members</p>
+                          <div className="flex flex-wrap gap-2">
+                            {teamData.members.map((m) => (
+                              <div
+                                key={m.userId}
+                                title={m.userName || "Member"}
+                                className="relative"
+                              >
+                                {m.userImage ? (
+                                  <Image
+                                    src={m.userImage}
+                                    alt={m.userName || "Member"}
+                                    width={30}
+                                    height={30}
+                                    className="rounded-full border border-yellow-400"
+                                  />
+                                ) : (
+                                  <div className="w-8 h-8 rounded-full bg-gray-700 border border-yellow-400 flex items-center justify-center text-xs">
+                                    {m.userName?.charAt(0)}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <Button
+                          className="w-full cursor-pointer bg-yellow-400 text-black hover:bg-yellow-500 font-bold"
+                          onClick={() => router.push(`/team`)}
+                        >
+                          View Team Details
+                        </Button>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-gray-300 mb-6 text-lg">
+                          You haven&apos;t joined a team yet. Create or join a
+                          team to participate in events!
+                        </p>
+                        <Button
+                          className="bg-yellow-400 text-black hover:bg-yellow-500 font-bold px-8"
+                          onClick={() => router.push("/teams")}
+                        >
+                          Go to Teams
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
               {/* Activity Stats */}
-              <Card className="bg-linear-to-br from-gray-900 to-black border-2 border-yellow-400/50">
+              <Card className="bg-black/40 backdrop-blur-md border border-yellow-400/30">
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2 text-yellow-400">
+                  <CardTitle className="flex items-center space-x-3 text-2xl text-yellow-400">
                     <Trophy className="w-6 h-6" />
                     <span>Activity & Stats</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="bg-black/50 p-4 rounded-lg border border-yellow-400/30">
-                      <div className="text-3xl font-bold text-yellow-400">
-                        0
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="bg-black/60 p-6 rounded-2xl border border-yellow-400/20 shadow-lg shadow-yellow-400/5"
+                    >
+                      <div className="text-4xl font-bold text-yellow-400 mb-2">
+                        {teamData?.eventsJoined || 0}
                       </div>
-                      <div className="text-sm font-medium text-gray-400 mt-1">
+                      <div className="text-sm font-medium text-gray-400">
                         Events Joined
                       </div>
-                    </div>
-                    <div className="bg-black/50 p-4 rounded-lg border border-yellow-400/30">
-                      <div className="text-3xl font-bold text-yellow-400">
-                        0
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="bg-black/60 p-6 rounded-2xl border border-yellow-400/20 shadow-lg shadow-yellow-400/5"
+                    >
+                      <div className="text-4xl font-bold text-yellow-400 mb-2">
+                        {teamData?.score || 0}
                       </div>
-                      <div className="text-sm font-medium text-gray-400 mt-1">
+                      <div className="text-sm font-medium text-gray-400">
                         Points Earned
                       </div>
-                    </div>
-                    <div className="bg-black/50 p-4 rounded-lg border border-yellow-400/30">
-                      <div className="text-3xl font-bold text-yellow-400">
-                        -
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="bg-black/60 p-6 rounded-2xl border border-yellow-400/20 shadow-lg shadow-yellow-400/5"
+                    >
+                      <div className="text-4xl font-bold text-yellow-400 mb-2">
+                        {teamData?.rank ? `#${teamData.rank}` : "-"}
                       </div>
-                      <div className="text-sm font-medium text-gray-400 mt-1">Rank</div>
-                    </div>
+                      <div className="text-sm font-medium text-gray-400">
+                        Rank
+                      </div>
+                    </motion.div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Quick Actions */}
-              <Card className="bg-linear-to-br from-gray-900 to-black border-2 border-yellow-400/50">
+              <Card className="bg-black/40 backdrop-blur-md border border-yellow-400/30">
                 <CardHeader>
-                  <CardTitle className="text-yellow-400">
+                  <CardTitle className="text-2xl text-yellow-400">
                     Quick Actions
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="grid md:grid-cols-2 gap-4">
                   <Button
                     variant="outline"
-                    className="border-yellow-400/50 hover:border-yellow-400 hover:bg-yellow-400/10"
+                    className="h-auto py-4 border-yellow-400/30 text-black cursor-pointer hover:bg-yellow-400 hover:text-black transition-all duration-300 text-lg group"
                     onClick={() => router.push("/events")}
                   >
+                    <Calendar className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                     Browse Events
                   </Button>
                   <Button
                     variant="outline"
-                    className="border-yellow-400/50 hover:border-yellow-400 hover:bg-yellow-400/10"
+                    className="h-auto py-4 border-yellow-400/30 text-black cursor-pointer hover:bg-yellow-400 hover:text-black transition-all duration-300 text-lg group"
                     onClick={() => router.push("/leaderboard")}
                   >
+                    <Trophy className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                     View Leaderboard
                   </Button>
                   <Button
                     variant="outline"
-                    className="border-yellow-400/50 hover:border-yellow-400 hover:bg-yellow-400/10"
+                    className="h-auto py-4 border-yellow-400/30 text-black cursor-pointer hover:bg-yellow-400 hover:text-black transition-all duration-300 text-lg group"
                     onClick={() => router.push("/hackaway")}
                   >
+                    <Hash className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                     HackAway Details
                   </Button>
                   <Button
                     variant="outline"
-                    className="border-yellow-400/50 hover:border-yellow-400 hover:bg-yellow-400/10"
+                    className="h-auto py-4 border-yellow-400/30 text-black cursor-pointer hover:bg-yellow-400 hover:text-black transition-all duration-300 text-lg group"
                     onClick={() => router.push("/contact")}
                   >
+                    <Phone className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                     Contact Us
                   </Button>
                 </CardContent>
