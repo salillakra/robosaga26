@@ -74,6 +74,7 @@ interface TeamResultsTableMeta {
   handleDeleteResult: (teamId: string, teamName: string) => Promise<void>;
   setTeamToDelete: (team: { id: string; name: string } | null) => void;
   maxScore: number;
+  isSaving: boolean;
 }
 
 interface TeamResultsTableProps {
@@ -87,6 +88,7 @@ export function TeamResultsTable({
   registrations,
   maxScore,
 }: TeamResultsTableProps) {
+  "use no memo";
   const [editingResults, setEditingResults] = useState<
     Record<string, { rank: number | null; marks: number | null }>
   >({});
@@ -97,7 +99,7 @@ export function TeamResultsTable({
 
   const router = useRouter();
 
-  const { mutateAsync: saveResult } = useMutation({
+  const { mutateAsync: saveResult, isPending: isSaving } = useMutation({
     mutationFn: async (data: {
       teamId: string;
       rank: number;
@@ -328,9 +330,10 @@ export function TeamResultsTable({
           const meta = table.options.meta as TeamResultsTableMeta;
           const {
             editingResults,
-            setEditingResults: setEditingResults,
+            setEditingResults,
             handleSaveResult,
             setTeamToDelete,
+            isSaving,
           } = meta;
           const team = row.original.teams;
           const existingResult = row.original.event_results?.[0];
@@ -378,7 +381,7 @@ export function TeamResultsTable({
               disabled={!editingResult || editingResult.marks === null}
             >
               <Save className="mr-2 h-4 w-4" />
-              Save
+              {isSaving ? "Saving..." : "Save"}
             </Button>
           );
         },
@@ -416,6 +419,7 @@ export function TeamResultsTable({
       handleDeleteResult,
       setTeamToDelete,
       maxScore,
+      isSaving,
     },
   });
 

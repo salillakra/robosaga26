@@ -61,18 +61,20 @@ import {
   Mail,
   Copy,
   Filter,
+  ShieldCheck,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useUpdateUserRole } from "@/hooks/useAdmin";
 
 interface UserData {
   id: string;
   name: string | null;
   email: string | null;
   image: string | null;
-  role: "admin" | "user";
+  role: "admin" | "moderator" | "user";
   rollNo: string | null;
   branch: string | null;
   phoneNo: string | null;
@@ -82,6 +84,7 @@ interface UserData {
 interface UsersDataTableProps {
   users: UserData[];
   currentUserId?: string;
+  currentUserRole?: "admin" | "moderator" | "user";
 }
 
 function getInitials(name: string | null): string {
@@ -105,6 +108,7 @@ function formatDate(date: Date): string {
 export function UsersDataTable({
   users: initialUsers,
   currentUserId,
+  currentUserRole,
 }: UsersDataTableProps) {
   const [data, setData] = useState(initialUsers);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -116,7 +120,9 @@ export function UsersDataTable({
   // Action States
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
-  const [newRole, setNewRole] = useState<"admin" | "user">("user");
+  const [newRole, setNewRole] = useState<"admin" | "moderator" | "user">(
+    "user"
+  );
   const [isUpdating, setIsUpdating] = useState(false);
 
   const router = useRouter();
@@ -127,20 +133,14 @@ export function UsersDataTable({
     setIsRoleDialogOpen(true);
   };
 
+  const { mutateAsync: updateUserRole } = useUpdateUserRole();
+
   const handleConfirmRoleChange = async () => {
     if (!selectedUser) return;
 
     setIsUpdating(true);
     try {
-      const response = await fetch("/api/admin/users/role", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: selectedUser.id, role: newRole }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update role");
-      }
+      await updateUserRole({ userId: selectedUser.id, role: newRole });
 
       // Update local state
       setData((prev) =>
@@ -212,11 +212,21 @@ export function UsersDataTable({
         const user = row.original;
         return (
           <Badge
-            variant={user.role === "admin" ? "default" : "secondary"}
-            className="gap-1 pointer-events-none"
+            variant={
+              user.role === "admin"
+                ? "default"
+                : user.role === "moderator"
+                ? "secondary"
+                : "outline"
+            }
+            className={`gap-1 pointer-events-none ${
+              user.role === "moderator" ? "border-blue-500 text-blue-500" : ""
+            }`}
           >
             {user.role === "admin" ? (
               <Shield className="h-3 w-3" />
+            ) : user.role === "moderator" ? (
+              <ShieldCheck className="h-3 w-3" />
             ) : (
               <User className="h-3 w-3" />
             )}
@@ -291,7 +301,7 @@ export function UsersDataTable({
                 <Mail className="mr-2 h-4 w-4" />
                 Send Email
               </DropdownMenuItem>
-              {!isMe && (
+              {!isMe && currentUserRole === "admin" && (
                 <>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => handleOpenRoleDialog(user)}>
@@ -460,6 +470,26 @@ export function UsersDataTable({
                 checked={
                   !!(
                     table.getColumn("role")?.getFilterValue() as string[]
+                  )?.includes("moderator")
+                }
+                onCheckedChange={(checked) => {
+                  const current =
+                    (table.getColumn("role")?.getFilterValue() as string[]) ||
+                    [];
+                  const newRoles = checked
+                    ? [...current, "moderator"]
+                    : current.filter((value) => value !== "moderator");
+                  table
+                    .getColumn("role")
+                    ?.setFilterValue(newRoles.length ? newRoles : undefined);
+                }}
+              >
+                Moderator
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={
+                  !!(
+                    table.getColumn("role")?.getFilterValue() as string[]
                   )?.includes("user")
                 }
                 onCheckedChange={(checked) => {
@@ -614,13 +644,16 @@ export function UsersDataTable({
               <span className="text-sm font-medium">Role</span>
               <Select
                 value={newRole}
-                onValueChange={(value: "admin" | "user") => setNewRole(value)}
+                onValueChange={(value: "admin" | "moderator" | "user") =>
+                  setNewRole(value)
+                }
               >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="user">User</SelectItem>
+                  <SelectItem value="moderator">Moderator</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
                 </SelectContent>
               </Select>

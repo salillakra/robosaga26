@@ -56,6 +56,7 @@ import {
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
+import { useUpdateTeamScore } from "@/hooks/useAdmin";
 
 interface TeamMember {
   userId: string;
@@ -109,6 +110,8 @@ export function TeamsDataTable({ teams: initialTeams }: TeamsDataTableProps) {
   const [viewTeamDialogOpen, setViewTeamDialogOpen] = useState(false);
   const [viewingTeam, setViewingTeam] = useState<Team | null>(null);
 
+  const { mutateAsync: updateTeamScore } = useUpdateTeamScore();
+
   const handleOpenScoreDialog = (team: Team) => {
     setScoringTeam(team);
     setScoreInput(team.score.toString());
@@ -136,18 +139,10 @@ export function TeamsDataTable({ teams: initialTeams }: TeamsDataTableProps) {
 
     setIsUpdating(true);
     try {
-      const response = await fetch("/api/admin/teams/score", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          teamId: scoringTeam.id,
-          score: newScore,
-        }),
+      await updateTeamScore({
+        teamId: scoringTeam.id,
+        score: newScore,
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to update score");
-      }
 
       // Update local state and data source
       const updatedTeams = data.map((t) =>

@@ -12,14 +12,23 @@ async function UsersContent() {
   let currentUser;
   try {
     currentUser = await getCurrentUser();
-    if (!currentUser || currentUser.role !== "admin") {
+    if (
+      !currentUser ||
+      (currentUser.role !== "admin" && currentUser.role !== "moderator")
+    ) {
       throw new Error("Unauthorized");
     }
   } catch {
     redirect("/api/auth/signin?callbackUrl=/admin/dashboard/users");
   }
   const users = await getAllUsers();
-  return <UsersDataTable users={users} currentUserId={currentUser.id} />;
+  return (
+    <UsersDataTable
+      users={users}
+      currentUserId={currentUser.id}
+      currentUserRole={currentUser.role}
+    />
+  );
 }
 
 export default function UsersPage() {
