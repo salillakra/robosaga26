@@ -42,6 +42,7 @@ const branches = [
   "Production & Industrial Engineering",
   "B.Arch",
   "B.Pharm",
+  "Mathematics & Computing",
   "Others",
 ] as const;
 
